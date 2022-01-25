@@ -1,0 +1,9 @@
+{
+  "customerStateRequest": {
+    "contactType": "mobile",
+    "countryCode": "+91",
+    "mobile": "9618533850",
+    "password": "sdkhjfd",
+    "status": true
+  }
+}

@@ -1,0 +1,112 @@
+#%RAML 1.0
+title: customer-sapi.raml
+description: This API is used by front end system to interact with customer.
+version: 1.0.0
+
+traits:
+  common-header: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/traits/commmon-header-trait.raml
+
+types:
+  error-dataType: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/datatypes/error-datatype.raml
+  post-registeration-request-dataType: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/datatypes/post-registeration-request-datatype.raml
+  post-registeration-response-dataType: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/datatypes/post-registeration-response-datatype.raml
+  post-customerState-request-dataType: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/datatypes/post-customerState-request-datatype.raml
+  post-customerState-response-dataType: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/datatypes/post-customerState-response-datatype.raml
+
+/customers:
+  /registeration:
+    post:
+      is:
+        - common-header
+
+      queryParameters:
+        featureName: 
+          type: string
+          required: true
+          enum:
+            - "cf"
+            - "cwf"
+          example: "cf"
+      body:
+        application/json:
+          type: post-registeration-request-dataType
+          example: !include /Examples/post-registeration-request-example.json
+            
+      responses:
+        201:
+          body:
+            application/json:
+              type: post-registeration-response-dataType
+              example: !include /Examples/post-registeration-response-example.json
+                
+        400:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-400-response-example.json                        
+        401:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-401-response-example.json
+                
+        404:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-404-response-example.json
+                
+        500:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-500-response-example.json
+
+/customerState:
+    post:
+      is:
+        - common-header
+
+      queryParameters:
+        featureName: 
+          type: string
+          required: true
+          enum:
+            - "cf"
+            - "cwf"
+          example: "cf"
+      body:
+        application/json:
+          type: post-customerState-request-dataType
+          example: !include /Examples/post-customerState-request-example.json
+            
+      responses:
+        201:
+          body:
+            application/json:
+              type: post-customerState-response-dataType
+              example: !include /Examples/post-customerState-response-example.json
+                
+        400:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-400-response-example.json                        
+        401:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-401-response-example.json
+                
+        404:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-404-response-example.json
+                
+        500:
+          body:
+            application/json:
+              type: error-dataType
+              example: !include /exchange_modules/0eee9309-0d02-41e8-adc9-4d840e0cd739/common-fragments/1.0.5/examples/error-500-response-example.json
+                                                                

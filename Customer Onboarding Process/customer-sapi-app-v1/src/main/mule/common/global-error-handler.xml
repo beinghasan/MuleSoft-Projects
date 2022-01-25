@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="app-global-error-handlerError_Handler" doc:id="7a25870d-d5da-4e5e-ad3f-2ad0182d188b" >
+	    <on-error-continue type="SALESFORCE:INVALID_INPUT" enableNotifications="true" logException="true">
+			<ee:transform doc:name="Transform Message for SFDC invalid input" doc:id="6ff340b3-83e4-4c57-af0d-425dc3db70d9" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="code" ><![CDATA[500]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[error.errorType.identifier]]></ee:set-variable>
+					<ee:set-variable variableName="title" ><![CDATA[error.description]]></ee:set-variable>
+					<ee:set-variable variableName="details" ><![CDATA[error.detailedDescription]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference to error payload" doc:id="87c20664-b18c-483d-9483-3535a749fe57" name="error-response-subFlow" />
+			<logger level="INFO" doc:name="Error Logger" doc:id="51da5e40-33c0-4f06-9021-a9e1157d1943" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;ERROR&quot;&#10;}]"/>
+            
+</on-error-continue>
+</error-handler>
+	<error-handler name="apikit-global-error-handlerError_Handler" doc:id="b8862d08-9bfc-4e7b-8bf0-738768291fff" >
+	    <on-error-propagate type="APIKIT:BAD_REQUEST">
+			<ee:transform doc:name="Transform Message for bad request" doc:id="ea12a423-6f33-4257-8f45-1e0e538359c9" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="code" ><![CDATA[p('error.bad_request.code')]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[p('error.bad_request.errorType')]]></ee:set-variable>
+					<ee:set-variable variableName="title" ><![CDATA[p('error.bad_request.title')]]></ee:set-variable>
+					<ee:set-variable variableName="details" ><![CDATA[p('error.bad_request.details')]]></ee:set-variable>
+				    <ee:set-variable variableName="httpStatus" ><![CDATA['error.bad_request.code']]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference to error payload" doc:id="be24c81d-4a3e-4c1d-a8ba-c260778ac558" name="error-response-subFlow" />
+			<logger level="INFO" doc:name="Error Logger" doc:id="550c328f-b761-4897-bf3c-19ecafba453a" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;ERROR&quot;&#10;}]"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message for resource not found" doc:id="c524047d-cc74-4c0f-8adc-5c6f1778090c" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="code" ><![CDATA[p('error.not_found.code')]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[p('error.not_found.errorType')]]></ee:set-variable>
+					<ee:set-variable variableName="title" ><![CDATA[p('error.not_found.title')]]></ee:set-variable>
+					<ee:set-variable variableName="details" ><![CDATA[p('error.not_found.details')]]></ee:set-variable>
+				    <ee:set-variable variableName="httpStatus" ><![CDATA['error.not_found.code']]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference to error payload" doc:id="f5966814-cb43-4c79-80a2-8e79f8c50c1f" name="error-response-subFlow" />
+			<logger level="INFO" doc:name="Error Logger" doc:id="f8b62b15-53eb-4b82-8044-0d587529eea6" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;ERROR&quot;&#10;}]"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform doc:name="Transform Message for method not allowed" doc:id="ddb35387-b24c-4852-8c41-87858138f479" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="code" ><![CDATA[p('error.method_not_allowed.code')]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[p('error.method_not_allowed.errorType')]]></ee:set-variable>
+					<ee:set-variable variableName="title" ><![CDATA[p('error.method_not_allowed.title')]]></ee:set-variable>
+					<ee:set-variable variableName="details" ><![CDATA[p('error.method_not_allowed.details')]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA['error.method_not_allowed.code']]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference to error payload" doc:id="281f2b24-3e1f-4cac-923c-1a84e0fa398f" name="error-response-subFlow" />
+			<logger level="INFO" doc:name="Error Logger" doc:id="fdf4f3b6-09d7-4935-aaac-61bbfb5f784e" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;ERROR&quot;&#10;}]"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform doc:name="Transform Message for request not acceptable" doc:id="8a6b9def-f55a-4348-a597-e0061323254e" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="code" ><![CDATA[p('error.not_acceptable.code')]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[p('error.not_acceptable.errorType')]]></ee:set-variable>
+					<ee:set-variable variableName="title" ><![CDATA[p('error.not_acceptable.title')]]></ee:set-variable>
+					<ee:set-variable variableName="details" ><![CDATA[p('error.not_acceptable.details')]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA['error.not_acceptable.code']]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference to error payload" doc:id="3e4ff333-2858-475d-a197-e6fc9028c474" name="error-response-subFlow" />
+			<logger level="INFO" doc:name="Error Logger" doc:id="0cbe7215-a104-41e4-a1f3-33275873597e" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;ERROR&quot;&#10;}]"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform doc:name="Transform Message for unsupported media type" doc:id="6c59c571-1091-4abf-b54f-91bf391a562e" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="code" ><![CDATA[p('error.unsupported_media_type.code')]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[p('error.unsupported_media_type.errorType')]]></ee:set-variable>
+					<ee:set-variable variableName="title" ><![CDATA[p('error.unsupported_media_type.title')]]></ee:set-variable>
+					<ee:set-variable variableName="details" ><![CDATA[p('error.unsupported_media_type.details')]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA['error.unsupported_media_type.code']]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference to error payload" doc:id="ee157da2-484c-4ad2-b4b3-4009bce85d82" name="error-response-subFlow" />
+			<logger level="INFO" doc:name="Error Logger" doc:id="0ed2d339-f330-4f04-87a7-d3db7cd3a126" message="#[%dw 2.0]"/>
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform doc:name="Transform Message for resource not implemented" doc:id="83e4cc51-1152-414e-b050-deb17798a5a3" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="code" ><![CDATA[p('error.not_implemented.code')]]></ee:set-variable>
+					<ee:set-variable variableName="title" ><![CDATA[p('error.not_implemented.title')]]></ee:set-variable>
+					<ee:set-variable variableName="details" ><![CDATA[p('error.not_implemented.details')]]></ee:set-variable>
+					<ee:set-variable variableName="errorType" ><![CDATA[p('error.not_implemented.errorType')]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA['error.not_implemented.code']]></ee:set-variable>
+				
+</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Flow Reference to error payload" doc:id="8407811b-5307-4dfe-96d4-12f610426da4" name="error-response-subFlow" />
+			<logger level="INFO" doc:name="Error Logger" doc:id="e08759a1-fcca-4e62-a39e-10d94f197ef7" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;ERROR&quot;&#10;}]"/>
+            
+</on-error-propagate>
+	</error-handler>
+</mule>

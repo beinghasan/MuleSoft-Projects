@@ -1,0 +1,10 @@
+http:
+  listener:
+    host: "localhost"
+    port: "8082"
+    
+sfdc:
+  username: "hasan@dg.com"
+  password: "oftfk*14"
+  securityToken: "R3vTXh2QgwsYEnrSjdvry1SZ7"    
+    

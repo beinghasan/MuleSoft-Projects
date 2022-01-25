@@ -1,0 +1,38 @@
+error:
+  bad_request:
+    code: "400"
+    errorType: "BAD_REQUEST"
+    title: "Invalid Request"
+    details: "The input contains invalid data"
+  not_found:
+    code: "404"
+    errorType: "NOT_FOUND"
+    title: "Resource Not Found"
+    details: "The URI requested is invalid or the resource requested does not exists"
+  method_not_allowed:
+    code: "405"
+    errorType: "METHOD_NOT_ALLOWED"
+    title: "Method Not Allowed"
+    details: >
+      Request method is known by the server but is not supported by the target resource and
+      doesn't 'allow you to perform a specific action for a particular URL.
+  not_acceptable:
+    code: "406"
+    errorType: "NOT_ACCEPTABLE"
+    title: "Client-side Error"
+    details: >
+      An appropriate representation of the requested resource could not be found on this server. 
+      Server cannot produce a response matching the list of acceptable values defined in the request's 
+      proactive content negotiation headers, and that the server is unwilling to supply a default representation.
+  unsupported_media_type:
+    code: "415"
+    errorType: "UNSUPPORTED_MEDIA_TYPE"
+    title: "Unsupported Media Type"
+    details: "Server refuses to accept the request because the payload format is in an unsupported format."
+  not_implemented:
+    code: "501"
+    errorType: "NOT_IMPLEMENTED"
+    title: "Server Error Response"
+    details: "Server does not support the functionality required for access and does not recognize the request method"        
+      
+  

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="9009c22a-f92c-4b80-9b5c-432c20398322" >
+		<http:request-connection host="${http.requester.customer.sapi.host}" port="${http.requester.customer.sapi.port}"/>
+	</http:request-config>
+	<flow name="post-customer-state-implementation-flow" doc:id="06fb5e78-1277-43e0-8c1a-9d9ec57bfc48" >
+		<logger level="INFO" doc:name="Request Logger for SAPI call" doc:id="4be00034-05e7-4142-8efc-472322320810" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  BusinessProcessName: &quot;Customer State&quot;,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Experience API&quot;,&#10;  DestinationApplication: &quot;System API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;SAPI request&quot;&#10;}]"/>
+		<http:request method="POST" doc:name="Request" doc:id="c4224368-38b6-4345-ba05-cb02abe9b7a5" config-ref="HTTP_Request_configuration" path="${http.requester.customer.sapi.pathCustomerState}">
+			<http:body ><![CDATA[#[vars.requestPayload]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"clientSecret" : "dsgfhaegur457r6ewsewegrfjesh",
+	"x-cms-transactionId" : "GajhdgKD-32BJHblhjc2334-Bhjdkjlk332L",
+	"clientId" : "hsdfgysdhfcdshf37er6twgsdhfjcd"
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"featureName" : "cf"
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Response Logger for SAPI call" doc:id="7da7ecb0-2afa-489f-a9c1-081af106111a" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  BusinessProcessName: &quot;Customer State&quot;,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Experience API&quot;,&#10;  DestinationApplication: &quot;System API&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;SAPI response&quot;&#10;}]"/>
+		<ee:transform doc:name="Transform Message to create CustomerState SAPI response" doc:id="da052288-6e42-481a-9e21-d49d36bf05f8">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "customerStateResponse": {
+    "eventInstanceId": vars.headers.'x-cms-transactionId',
+    "status": "success"
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

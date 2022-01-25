@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    
+    <flow name="api-main">
+        <http:listener config-ref="api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="api-config" />
+        <error-handler ref="apikit-global-error-handlerError_Handler">
+            
+        </error-handler>
+    </flow>
+    <flow name="api-console">
+        <http:listener config-ref="api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="api-config" />
+		<error-handler ref="apikit-global-error-handlerError_Handler" />
+    </flow>
+    <flow name="post:\customers\registeration:application\json:api-config">
+		<flow-ref doc:name="Flow Reference to call initialize request data" doc:id="3007e7b9-f978-4a36-b61a-c339b1fbee71" name="Initialize-request-data-subFlow" />
+		<logger level="INFO" doc:name="Start logger for Customer Registeration API" doc:id="b91cf7d1-8b92-41f8-9ab6-871431cd098a" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  BusinessProcessName: &quot;Customer Registeration&quot;,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  DestinationApplication: &quot;Salesforce&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;START&quot;&#10;}]"/>
+		<flow-ref doc:name="Flow Reference to call Customer Registeration Implementation" doc:id="3c3a195d-c8e3-4fd3-a945-52ad1f6a94d1" name="post-customer-registeration-implementation-flow"/>
+		<logger level="INFO" doc:name="End logger for Customer Registeration API" doc:id="ab32f5ac-03c6-4d78-b271-7c7f6894a6b6" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  BusinessProcessName: &quot;Customer Registeration&quot;,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  DestinationApplication: &quot;Salesforce&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;END&quot;&#10;}]"/>
+		<error-handler ref="app-global-error-handlerError_Handler" />
+    </flow>
+    <flow name="post:\customerState:application\json:api-config">
+		<flow-ref doc:name="Flow Reference to call initialize request data" doc:id="f8ae888b-37a0-40d4-b9cc-6799a5a2ba52" name="Initialize-request-data-subFlow" />
+		<logger level="INFO" doc:name="Start logger for Customer State API" doc:id="90bd1846-cf4b-46d4-8878-913190d13611" message="#[%dw 2.0&#10;&#10;output application/json indent = false&#10;&#10;---&#10;&#10;{&#10;&#10;  TimeStamp: now(),&#10;&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;&#10;  AppName: app.name,&#10;&#10;  FlowName: flow.name,&#10;&#10;  BusinessProcessName: &quot;Customer State&quot;,&#10;&#10;  Category: &quot;Customer&quot;,&#10;&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;&#10;  DestinationApplication: &quot;Salesforce&quot;,&#10;&#10;  CustomerId: &quot;NA&quot;,&#10;&#10;  txnState: &quot;START&quot;&#10;&#10;}]"/>
+		<flow-ref doc:name="Flow Reference to call Customer State Implementation" doc:id="83bc0fbd-4fe6-436a-a896-6aa106bc1a3c" name="post-customer-state-implementation-flow"/>
+		<logger level="INFO" doc:name="End logger for Customer State API" doc:id="e7916743-99ed-4997-a372-873777d94200" message="#[%dw 2.0&#10;&#10;output application/json indent = false&#10;&#10;---&#10;&#10;{&#10;&#10;  TimeStamp: now(),&#10;&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;&#10;  AppName: app.name,&#10;&#10;  FlowName: flow.name,&#10;&#10;  BusinessProcessName: &quot;Customer State&quot;,&#10;&#10;  Category: &quot;Customer&quot;,&#10;&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;&#10;  DestinationApplication: &quot;Salesforce&quot;,&#10;&#10;  CustomerId: &quot;NA&quot;,&#10;&#10;  txnState: &quot;END&quot;&#10;&#10;}]"/>
+		<error-handler ref="app-global-error-handlerError_Handler" />
+    </flow>
+</mule>

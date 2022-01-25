@@ -1,0 +1,12 @@
+http:
+  listener:
+    host: "localhost"
+    port: "8081"
+  requester:
+    customer:
+      sapi:
+        host: "localhost"
+        port: "8082"
+        pathCustomerState: "/api/customerState"
+   
+    

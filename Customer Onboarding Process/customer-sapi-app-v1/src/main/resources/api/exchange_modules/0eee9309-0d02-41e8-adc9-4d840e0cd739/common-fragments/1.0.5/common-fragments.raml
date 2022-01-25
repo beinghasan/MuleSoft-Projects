@@ -1,0 +1,12 @@
+#%RAML 1.0 ResourceType
+
+traits:
+  common-header: !include /traits/commmon-header-trait.raml
+  authorization-header: !include /traits/header-jwt-authorization-trait.raml
+
+types:
+  error-dataType: !include /datatypes/error-datatype.raml
+  post-registeration-request-dataType: !include /datatypes/post-registeration-request-datatype.raml
+  post-registeration-response-dataType: !include /datatypes/post-registeration-response-datatype.raml
+
+

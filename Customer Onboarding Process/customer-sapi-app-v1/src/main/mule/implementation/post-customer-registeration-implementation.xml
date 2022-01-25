@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	
+	<flow name="post-customer-registeration-implementation-flow" doc:id="06fb5e78-1277-43e0-8c1a-9d9ec57bfc48" >
+		<ee:transform doc:name="Transform Message to create SFDC request payload for registeration object" doc:id="e3ca7251-30d3-45d8-813d-7984023209f0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[{
+	"contactType__c": payload.registerationRequest.contactType,
+	"countryCode__c": payload.registerationRequest.countryCode,
+	"mobile__c": payload.registerationRequest.mobile,
+	"password__c": payload.registerationRequest.password,
+	"acceptDataPolicy__c": payload.registerationRequest.acceptDataPolicy,
+	"recieveNews__c": payload.registerationRequest.recieveNews,
+	"acceptPIC__c": payload.registerationRequest.acceptPIC,
+	"locale__c": payload.registerationRequest.locale,
+	"captchatoken__c": payload.registerationRequest.captchatoken,
+	"recieveClaimsettle__c": payload.registerationRequest.recieveClaimsettle
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Request Logger for SFDC call" doc:id="4be00034-05e7-4142-8efc-472322320810" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  BusinessProcessName: &quot;Customer Registeration&quot;,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  DestinationApplication: &quot;Salesforce&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;SFDC request&quot;&#10;}]"/>
+		<salesforce:create type="registeration__c" doc:name="Create call to SFDC registeration object to insert registeration data" doc:id="4dea4ffb-1e3d-42ee-a5c5-4f7629101c19" config-ref="Salesforce_Config"/>
+		<logger level="INFO" doc:name="Response Logger for SFDC call" doc:id="7da7ecb0-2afa-489f-a9c1-081af106111a" message="#[%dw 2.0&#10;output application/json indent = false&#10;---&#10;{&#10;  TimeStamp: now(),&#10;  transactionId: vars.headers.'x-cms-transactionId',&#10;  AppName: app.name,&#10;  FlowName: flow.name,&#10;  BusinessProcessName: &quot;Customer Registeration&quot;,&#10;  Category: &quot;Customer&quot;,&#10;  OriginatingApplication: &quot;Process API&quot;,&#10;  DestinationApplication: &quot;Salesforce&quot;,&#10;  CustomerId: &quot;NA&quot;,&#10;  txnState: &quot;SFDC response&quot;&#10;}]"/>
+		<ee:transform doc:name="Transform Message to create registeration SAPI response" doc:id="da052288-6e42-481a-9e21-d49d36bf05f8">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "registrationResponse": {
+    "eventInstanceId": vars.headers.'x-cms-transactionId',
+    "status": "success"
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
